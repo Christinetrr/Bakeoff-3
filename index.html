@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Browser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e2e8f0;
+        }
+
+        #header {
+            position: fixed;
+            top: 0;
+            left: 300px;
+            right: 0;
+            height: 80px;
+            background: #2d3748;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #header h1 {
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        #sidebar {
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            margin-top: 80px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .filter-header h5 {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .time-range {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .movie-card {
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            color: #4a5568;
+            font-family: 'Georgia', serif;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .movie-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2d3748;
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .movie-description {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #718096;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .movie-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .movie-info {
+            flex: 1;
+        }
+
+        .movie-runtime {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .movie-genres-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .movie-genres {
+            color: #718096;
+        }
+
+        .movie-cast {
+            flex: 1;
+            text-align: right;
+        }
+
+        .movie-cast-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .movie-cast-list {
+            color: #718096;
+        }
+
+        .showtime-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .showtime-button {
+            background-color: #805ad5;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .showtime-button:hover {
+            background-color: #6b46c1;
+            transform: translateY(-2px);
+        }
+
+        .ticket-counter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ticket-counter button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #4a5568;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .ticket-counter button:hover {
+            background: #718096;
+        }
+
+        .ticket-counter span {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .scrollable-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
+            background-color: #f7fafc;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+        }
+
+        .form-check-input:checked {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        .btn-primary {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        .btn-primary:hover {
+            background-color: #718096;
+            border-color: #718096;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #718096;
+            box-shadow: 0 0 0 0.25rem rgba(74, 85, 104, 0.25);
+        }
+
+        .btn-danger {
+            background-color: #e53e3e;
+            border-color: #e53e3e;
+        }
+
+        .btn-danger:hover {
+            background-color: #c53030;
+            border-color: #c53030;
+        }
+
+        .btn-secondary {
+            background-color: #718096;
+            border-color: #718096;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-submit {
+            background-color: #4299e1;
+            border-color: #4299e1;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #3182ce;
+            border-color: #3182ce;
+        }
+    </style>
+    <!-- One required script -->
+    <script src="https://dhcs-s25-bakeoff3.glitch.me/framework.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="filter-section">
+            <div class="filter-header">
+                <h5>Feature Filters</h5>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="featureToggle">
+                    <label class="form-check-label" for="featureToggle">Include/Exclude</label>
+                </div>
+            </div>
+            <select class="form-select mb-3" id="featureSelect">
+                <option value="genre">Genre</option>
+                <option value="actors">Actors</option>
+            </select>
+            <div class="scrollable-list" id="includeList">
+                <!-- Sample include items -->
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="genre1" checked>
+                    <label class="form-check-label" for="genre1">Action</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="genre2">
+                    <label class="form-check-label" for="genre2">Comedy</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="genre3" checked>
+                    <label class="form-check-label" for="genre3">Drama</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="genre4">
+                    <label class="form-check-label" for="genre4">Sci-Fi</label>
+                </div>
+            </div>
+            <div class="scrollable-list mt-2" id="excludeList">
+                <!-- Sample exclude items -->
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="exclude1">
+                    <label class="form-check-label" for="exclude1">Horror</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="exclude2" checked>
+                    <label class="form-check-label" for="exclude2">Romance</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" class="form-check-input" id="exclude3">
+                    <label class="form-check-label" for="exclude3">Documentary</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h5>Time Filters</h5>
+            <div id="timeRanges">
+                <div class="time-range">
+                    <input type="time" class="form-control" value="14:00" placeholder="Start After">
+                    <input type="time" class="form-control" value="20:00" placeholder="End Before">
+                    <button class="btn btn-danger btn-sm">×</button>
+                </div>
+                <div class="time-range">
+                    <input type="time" class="form-control" value="10:00" placeholder="Start After">
+                    <input type="time" class="form-control" value="12:00" placeholder="End Before">
+                    <button class="btn btn-danger btn-sm">×</button>
+                </div>
+            </div>
+            <button class="btn btn-secondary btn-sm mt-2">Add Time Range</button>
+        </div>
+
+        <div class="filter-section">
+            <h5>Runtime Filter</h5>
+            <div class="d-flex gap-2">
+                <input type="number" class="form-control" value="90" placeholder="Min (minutes)">
+                <input type="number" class="form-control" value="180" placeholder="Max (minutes)">
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h5>Available Tickets</h5>
+            <div class="ticket-counter">
+                <button>-</button>
+                <span id="ticketCount">5</span>
+                <button>+</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h5>Your Name</h5>
+            <input type="text" id="userName" class="form-control" placeholder="Enter your name" value="User">
+        </div>
+
+        <div class="buttons-container">
+            <button class="btn btn-primary" id="filterButton">Apply Filters</button>
+            <button class="btn btn-submit" id="submitButton">Submit Selection</button>
+        </div>
+    </div>
+
+    <div id="header">
+        <h1>Movies</h1>
+    </div>
+
+    <div id="main-content">
+        <div class="row" id="movieGrid">
+            <!-- Updated movie cards with new layout -->
+            <div class="col-md-6 mb-4">
+                <div class="movie-card">
+                    <div class="movie-card-header">
+                        <div class="movie-title">The Adventure Begins</div>
+                        <div class="movie-description">An epic journey through uncharted territories where a group of explorers faces unimaginable challenges and discovers ancient mysteries.</div>
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-info">
+                            <div class="movie-runtime">134 min</div>
+                            <div class="movie-genres-title">Genres:</div>
+                            <div class="movie-genres">Action, Adventure, Fantasy</div>
+                        </div>
+                        <div class="movie-cast">
+                            <div class="movie-cast-title">Starring:</div>
+                            <div class="movie-cast-list">Emma Stone, Chris Hemsworth</div>
+                        </div>
+                    </div>
+                    <div class="showtime-buttons">
+                        <button class="showtime-button">10:00 AM</button>
+                        <button class="showtime-button">1:30 PM</button>
+                        <button class="showtime-button">4:45 PM</button>
+                        <button class="showtime-button">8:00 PM</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="movie-card">
+                    <div class="movie-card-header">
+                        <div class="movie-title">Laugh Out Loud</div>
+                        <div class="movie-description">A hilarious comedy that follows the misadventures of a struggling stand-up comedian who finds success in the most unexpected ways.</div>
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-info">
+                            <div class="movie-runtime">98 min</div>
+                            <div class="movie-genres-title">Genres:</div>
+                            <div class="movie-genres">Comedy, Drama</div>
+                        </div>
+                        <div class="movie-cast">
+                            <div class="movie-cast-title">Starring:</div>
+                            <div class="movie-cast-list">Ryan Reynolds, Melissa McCarthy</div>
+                        </div>
+                    </div>
+                    <div class="showtime-buttons">
+                        <button class="showtime-button">11:15 AM</button>
+                        <button class="showtime-button">2:00 PM</button>
+                        <button class="showtime-button">5:30 PM</button>
+                        <button class="showtime-button">8:45 PM</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="movie-card">
+                    <div class="movie-card-header">
+                        <div class="movie-title">Space Odyssey</div>
+                        <div class="movie-description">A groundbreaking sci-fi epic that explores the mysteries of deep space and humanity's quest to colonize distant planets.</div>
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-info">
+                            <div class="movie-runtime">156 min</div>
+                            <div class="movie-genres-title">Genres:</div>
+                            <div class="movie-genres">Sci-Fi, Adventure</div>
+                        </div>
+                        <div class="movie-cast">
+                            <div class="movie-cast-title">Starring:</div>
+                            <div class="movie-cast-list">Tom Cruise, Charlize Theron</div>
+                        </div>
+                    </div>
+                    <div class="showtime-buttons">
+                        <button class="showtime-button">12:30 PM</button>
+                        <button class="showtime-button">3:45 PM</button>
+                        <button class="showtime-button">7:00 PM</button>
+                        <button class="showtime-button">10:15 PM</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="movie-card">
+                    <div class="movie-card-header">
+                        <div class="movie-title">The Mystery of the Night</div>
+                        <div class="movie-description">A gripping thriller that keeps audiences on the edge of their seats as a detective unravels a complex web of deception and intrigue.</div>
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-info">
+                            <div class="movie-runtime">122 min</div>
+                            <div class="movie-genres-title">Genres:</div>
+                            <div class="movie-genres">Thriller, Mystery</div>
+                        </div>
+                        <div class="movie-cast">
+                            <div class="movie-cast-title">Starring:</div>
+                            <div class="movie-cast-list">Jake Gyllenhaal, Emily Blunt</div>
+                        </div>
+                    </div>
+                    <div class="showtime-buttons">
+                        <button class="showtime-button">1:00 PM</button>
+                        <button class="showtime-button">4:15 PM</button>
+                        <button class="showtime-button">7:30 PM</button>
+                        <button class="showtime-button">10:45 PM</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="movie-card">
+                    <div class="movie-card-header">
+                        <div class="movie-title">Love in Paris</div>
+                        <div class="movie-description">A romantic comedy set against the backdrop of the City of Light, where two strangers find unexpected love during a chance encounter.</div>
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-info">
+                            <div class="movie-runtime">105 min</div>
+                            <div class="movie-genres-title">Genres:</div>
+                            <div class="movie-genres">Romance, Comedy</div>
+                        </div>
+                        <div class="movie-cast">
+                            <div class="movie-cast-title">Starring:</div>
+                            <div class="movie-cast-list">Scarlett Johansson, Bradley Cooper</div>
+                        </div>
+                    </div>
+                    <div class="showtime-buttons">
+                        <button class="showtime-button">10:45 AM</button>
+                        <button class="showtime-button">2:15 PM</button>
+                        <button class="showtime-button">5:00 PM</button>
+                        <button class="showtime-button">8:30 PM</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="movie-card">
+                    <div class="movie-card-header">
+                        <div class="movie-title">Nature's Wonders</div>
+                        <div class="movie-description">A breathtaking documentary that showcases the planet's most stunning landscapes and the incredible creatures that inhabit them.</div>
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-info">
+                            <div class="movie-runtime">87 min</div>
+                            <div class="movie-genres-title">Genres:</div>
+                            <div class="movie-genres">Documentary, Nature</div>
+                        </div>
+                        <div class="movie-cast">
+                            <div class="movie-cast-title">Narrated by:</div>
+                            <div class="movie-cast-list">David Attenborough</div>
+                        </div>
+                    </div>
+                    <div class="showtime-buttons">
+                        <button class="showtime-button">11:30 AM</button>
+                        <button class="showtime-button">2:45 PM</button>
+                        <button class="showtime-button">5:15 PM</button>
+                        <button class="showtime-button">8:15 PM</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize the Judge with your team name
+        const judge = new Judge("SoGiChi");
+        
+        // Get all movies from the framework
+        const movies = judge.getMovies();
+        
+        // Add submission event handler
+        judge.on("submission", data => {
+            // "data" will include: 
+            // userData (containing the data we just sent to the Judge), teamName, and elapsedTime (since page load)
+            console.log("Time elapsed: " + data.elapsedTime);
+            
+        });
+        
+        // Store filtered movies
+        let filteredMovies = [...movies];
+        
+
+        let currentlySelectedMovie = movies[0]; // Default to first movie
+        let currentlySelectedTime = movies[0].movieTimes[0]; // Default to first showtime
+        
+        // DOM elements
+        const ticketCountEl = document.getElementById("ticketCount");
+        const filterButton = document.getElementById("filterButton");
+        const submitButton = document.getElementById("submitButton");
+        const ticketBtns = document.querySelectorAll(".ticket-counter button");
+        const featureToggle = document.getElementById("featureToggle");
+        const featureSelect = document.getElementById("featureSelect");
+        const includeList = document.getElementById("includeList");
+        const excludeList = document.getElementById("excludeList");
+        const movieGrid = document.getElementById("movieGrid");
+        const runtimeInputs = document.querySelectorAll('input[type="number"]');
+        const addTimeRangeBtn = document.querySelector('.filter-section button.btn-secondary');
+        const timeRangesContainer = document.getElementById("timeRanges");
+        
+        // Initialize UI with actual movie data
+        function initUI() {
+            // Clear existing genre checkboxes
+            includeList.innerHTML = '';
+            excludeList.innerHTML = '';
+            
+            // Get all unique genres from movies
+            const genres = new Set();
+            movies.forEach(movie => {
+                movie.genres.forEach(genre => genres.add(genre));
+            });
+            
+            // Add genre checkboxes
+            let i = 0;
+            genres.forEach(genre => {
+                const includeItem = createCheckboxItem(genre, `include-${i}`, true);
+                includeList.appendChild(includeItem);
+                
+                const excludeItem = createCheckboxItem(genre, `exclude-${i}`, false);
+                excludeList.appendChild(excludeItem);
+                i++;
+            });
+            
+            // Populate movie grid with all movies
+            updateMovieGrid(movies);
+        }
+        
+        // Create a checkbox item
+        function createCheckboxItem(label, id, checked) {
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+            
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = id;
+            if (checked) input.checked = true;
+            
+            const labelEl = document.createElement('label');
+            labelEl.htmlFor = id;
+            labelEl.textContent = label;
+            
+            div.appendChild(input);
+            div.appendChild(labelEl);
+            return div;
+        }
+        
+        // Update movie grid with filtered movies
+        function updateMovieGrid(moviesToShow) {
+            movieGrid.innerHTML = '';
+            
+            moviesToShow.forEach(movie => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                
+                // Create card header with title and description
+                const header = document.createElement('div');
+                header.className = 'movie-card-header';
+                
+                const title = document.createElement('div');
+                title.className = 'movie-title';
+                title.textContent = movie.title;
+                
+                const description = document.createElement('div');
+                description.className = 'movie-description';
+                description.textContent = movie.description;
+                
+                header.appendChild(title);
+                header.appendChild(description);
+                
+                // Create details section with runtime, genres and cast
+                const details = document.createElement('div');
+                details.className = 'movie-details';
+                
+                const info = document.createElement('div');
+                info.className = 'movie-info';
+                
+                const runtime = document.createElement('div');
+                runtime.className = 'movie-runtime';
+                runtime.textContent = `${movie.movieLength} min`;
+                
+                const genresTitle = document.createElement('div');
+                genresTitle.className = 'movie-genres-title';
+                genresTitle.textContent = 'Genres:';
+                
+                const genres = document.createElement('div');
+                genres.className = 'movie-genres';
+                genres.textContent = movie.genres.join(', ');
+                
+                info.appendChild(runtime);
+                info.appendChild(genresTitle);
+                info.appendChild(genres);
+                
+                const cast = document.createElement('div');
+                cast.className = 'movie-cast';
+                
+                const castTitle = document.createElement('div');
+                castTitle.className = 'movie-cast-title';
+                castTitle.textContent = 'Starring:';
+                
+                const castList = document.createElement('div');
+                castList.className = 'movie-cast-list';
+                castList.textContent = movie.actors.join(', ');
+                
+                cast.appendChild(castTitle);
+                cast.appendChild(castList);
+                
+                details.appendChild(info);
+                details.appendChild(cast);
+                
+                // Create showtimes section
+                const showtimes = document.createElement('div');
+                showtimes.className = 'showtime-buttons';
+                
+                movie.movieTimes.forEach(time => {
+                    const button = document.createElement('button');
+                    button.className = 'showtime-button';
+                    button.textContent = time;
+                    
+                    // Add click event for showtime selection
+                    button.addEventListener('click', () => {
+                        // Store selected movie and time 
+                        currentlySelectedMovie = movie;
+                        currentlySelectedTime = time;
+                        
+                        // Highlight selected button
+                        document.querySelectorAll('.showtime-button.selected').forEach(btn => {
+                            btn.classList.remove('selected');
+                            btn.style.backgroundColor = '#805ad5';
+                        });
+                        button.classList.add('selected');
+                        button.style.backgroundColor = '#3182ce'; 
+                        
+                        console.log('Selected:', movie.title, time);
+                    });
+                    
+                    showtimes.appendChild(button);
+                });
+                
+                // Assemble card
+                card.appendChild(header);
+                card.appendChild(details);
+                card.appendChild(showtimes);
+                
+                movieGrid.appendChild(card);
+            });
+            
+            if (moviesToShow.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.textContent = 'No movies match your filters.';
+                noResults.style.padding = '20px';
+                noResults.style.textAlign = 'center';
+                movieGrid.appendChild(noResults);
+            }
+        }
+        
+        // Filter movies based on all criteria
+        function filterMovies() {
+            let result = [...movies];
+            
+            // Filter by tickets
+            const ticketCount = parseInt(ticketCountEl.textContent);
+            
+            // Filter by runtime
+            const minRuntime = parseInt(runtimeInputs[0].value) || 0;
+            const maxRuntime = parseInt(runtimeInputs[1].value) || Infinity;
+            result = result.filter(movie => {
+                return movie.movieLength >= minRuntime && movie.movieLength <= maxRuntime;
+            });
+            
+            // Filter by time ranges
+            const timeRanges = [];
+            document.querySelectorAll('.time-range').forEach(range => {
+                const inputs = range.querySelectorAll('input[type="time"]');
+                if (inputs[0].value && inputs[1].value) {
+                    timeRanges.push({
+                        start: inputs[0].value,
+                        end: inputs[1].value
+                    });
+                }
+            });
+            
+            if (timeRanges.length > 0) {
+                result = result.filter(movie => {
+                    return movie.movieTimes.some(time => {
+                        return timeRanges.some(range => {
+                            return time >= range.start && time <= range.end;
+                        });
+                    });
+                });
+            }
+            
+            // Filter by genres (include/exclude)
+            const includeGenres = [];
+            const excludeGenres = [];
+            
+            includeList.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                includeGenres.push(checkbox.nextElementSibling.textContent);
+            });
+            
+            excludeList.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                excludeGenres.push(checkbox.nextElementSibling.textContent);
+            });
+            
+            if (includeGenres.length > 0) {
+                result = result.filter(movie => {
+                    return movie.genres.some(genre => includeGenres.includes(genre));
+                });
+            }
+            
+            if (excludeGenres.length > 0) {
+                result = result.filter(movie => {
+                    return !movie.genres.some(genre => excludeGenres.includes(genre));
+                });
+            }
+            
+            return result;
+        }
+        
+        // Ticket counter functionality
+        ticketBtns[0].addEventListener('click', () => {
+            let count = parseInt(ticketCountEl.textContent);
+            if (count > 1) {
+                ticketCountEl.textContent = count - 1;
+            }
+        });
+        
+        ticketBtns[1].addEventListener('click', () => {
+            let count = parseInt(ticketCountEl.textContent);
+            ticketCountEl.textContent = count + 1;
+        });
+        
+        // Time range functionality
+        addTimeRangeBtn.addEventListener('click', () => {
+            const newRange = document.createElement('div');
+            newRange.className = 'time-range';
+            newRange.innerHTML = `
+                <input type="time" value="10:00" placeholder="Start After">
+                <input type="time" value="22:00" placeholder="End Before">
+                <button class="btn-danger">×</button>
+            `;
+            
+            // Add event listener to delete button
+            newRange.querySelector('.btn-danger').addEventListener('click', (e) => {
+                e.target.closest('.time-range').remove();
+            });
+            
+            timeRangesContainer.appendChild(newRange);
+        });
+        
+        // Add event listener to initial delete buttons
+        document.querySelectorAll('.time-range .btn-danger').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (document.querySelectorAll('.time-range').length > 1) {
+                    e.target.closest('.time-range').remove();
+                }
+            });
+        });
+        
+        // Apply filters button
+        filterButton.addEventListener('click', () => {
+            filteredMovies = filterMovies();
+            updateMovieGrid(filteredMovies);
+        });
+        
+        // Submit button click handler - just like in index-2.html
+        submitButton.addEventListener('click', () => {
+            // Check if a showtime has been selected
+            const selectedShowtime = document.querySelector('.showtime-button.selected');
+            if (!selectedShowtime) {
+                alert("Please select a showtime before submitting.");
+                return;
+            }
+            
+            // When user clicks submit, bundle up the data and submit it
+            const ticketCount = parseInt(ticketCountEl.textContent);
+            const userName = document.getElementById("userName").value || "User";
+            
+            // Bundle up everything the Judge wants to see (exactly like in index-2.html)
+            const userData = {
+                movie: currentlySelectedMovie, 
+                movieTime: currentlySelectedTime, 
+                numberOfTickets: ticketCount, 
+                userName: userName
+            };
+            
+            // Log the submission
+            console.log('Submitting:', currentlySelectedMovie.title, currentlySelectedTime, ticketCount, 'tickets for', userName);
+            
+            // Show successful submission alert
+            alert(`Thank you, ${userName}! Your selection of ${ticketCount} ticket(s) for "${currentlySelectedMovie.title}" at ${currentlySelectedTime} has been submitted successfully.`);
+            
+            // Visual feedback
+            submitButton.textContent = "Submitted!";
+            submitButton.classList.add("btn-success");
+            submitButton.disabled = true;
+            
+            // Reset after a short delay
+            setTimeout(() => {
+                submitButton.textContent = "Submit Selection";
+                submitButton.classList.remove("btn-success");
+                submitButton.disabled = false;
+            }, 5000);
+            
+            // Submit it to the Judge (exactly like in index-2.html)
+            judge.submitMovieChoice(userData);
+        });
+        
+        // Toggle include/exclude feature
+        featureToggle.addEventListener('change', () => {
+            if (featureToggle.checked) {
+                includeList.style.display = 'none';
+                excludeList.style.display = 'block';
+            } else {
+                includeList.style.display = 'block';
+                excludeList.style.display = 'none';
+            }
+        });
+        
+        // Initialize
+        excludeList.style.display = 'none'; // Hide exclude list initially
+        initUI(); // Initialize UI with movie data
+    </script>
+</body>
+</html> 
