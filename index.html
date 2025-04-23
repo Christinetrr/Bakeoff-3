@@ -79,6 +79,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
+            align-items: center;
         }
 
         .movie-card {
@@ -93,6 +94,8 @@
             font-family: 'Georgia', serif;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             background: white;
+            position: relative;
+            min-height: 250px;
         }
 
         .movie-card:hover {
@@ -117,7 +120,7 @@
         .movie-description {
             font-size: 0.9rem;
             line-height: 1.4;
-            color: #718096;
+            color: #681ee0;
             flex: 1;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -153,6 +156,10 @@
         .movie-cast {
             flex: 1;
             text-align: right;
+            position: absolute;
+            bottom: 55px;
+            right: 20px;
+            max-width: 50%;
         }
 
         .movie-cast-title {
@@ -169,6 +176,10 @@
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 15px;
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+            padding-top: 15px;
         }
 
         .showtime-button {
@@ -401,24 +412,24 @@
             <div id="timeRanges">
                 <div class="time-range">
                     <div class="time-input">
-                        <input type="time" class="time-field" value="14:00">
+                        <input type="text" class="time-field" pattern="([1-9]|1[0-2]):[0-5][0-9]" placeholder="From">
                         <button class="ampm-toggle active" data-period="PM">PM</button>
                     </div>
                     <span>to</span>
                     <div class="time-input">
-                        <input type="time" class="time-field" value="20:00">
+                        <input type="text" class="time-field" value="8:00" pattern="([1-9]|1[0-2]):[0-5][0-9]" placeholder="To">
                         <button class="ampm-toggle active" data-period="PM">PM</button>
                     </div>
                     <button class="btn btn-danger btn-sm">×</button>
                 </div>
                 <div class="time-range">
                     <div class="time-input">
-                        <input type="time" class="time-field" value="10:00">
+                        <input type="text" class="time-field" value="10:00" pattern="([1-9]|1[0-2]):[0-5][0-9]" placeholder="From">
                         <button class="ampm-toggle active" data-period="AM">AM</button>
                     </div>
                     <span>to</span>
                     <div class="time-input">
-                        <input type="time" class="time-field" value="12:00">
+                        <input type="text" class="time-field" pattern="([1-9]|1[0-2]):[0-5][0-9]" placeholder="To">
                         <button class="ampm-toggle" data-period="PM">PM</button>
                     </div>
                     <button class="btn btn-danger btn-sm">×</button>
@@ -443,7 +454,7 @@
         </div>
 
         <div class="filter-section">
-            <h5>Available Tickets</h5>
+            <h5>Number of Tickets</h5>
             <div class="ticket-counter">
                 <button>-</button>
                 <span id="ticketCount">5</span>
@@ -468,161 +479,12 @@
 
     <div id="main-content">
         <div class="row" id="movieGrid">
-            <!-- Updated movie cards with new layout -->
-            <div class="col-md-6 mb-4">
-                <div class="movie-card">
-                    <div class="movie-card-header">
-                        <div class="movie-title">The Adventure Begins</div>
-                        <div class="movie-description">An epic journey through uncharted territories where a group of explorers faces unimaginable challenges and discovers ancient mysteries.</div>
-                    </div>
-                    <div class="movie-details">
-                        <div class="movie-info">
-                            <div class="movie-runtime">134 min</div>
-                            <div class="movie-genres-title">Genres:</div>
-                            <div class="movie-genres">Action, Adventure, Fantasy</div>
-                        </div>
-                        <div class="movie-cast">
-                            <div class="movie-cast-title">Starring:</div>
-                            <div class="movie-cast-list">Emma Stone, Chris Hemsworth</div>
-                        </div>
-                    </div>
-                    <div class="showtime-buttons">
-                        <button class="showtime-button">10:00 AM</button>
-                        <button class="showtime-button">1:30 PM</button>
-                        <button class="showtime-button">4:45 PM</button>
-                        <button class="showtime-button">8:00 PM</button>
-                    </div>
+            <!-- Static movie cards removed - dynamically generated from Judge data -->
+            <div class="col-12 text-center p-5">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="movie-card">
-                    <div class="movie-card-header">
-                        <div class="movie-title">Laugh Out Loud</div>
-                        <div class="movie-description">A hilarious comedy that follows the misadventures of a struggling stand-up comedian who finds success in the most unexpected ways.</div>
-                    </div>
-                    <div class="movie-details">
-                        <div class="movie-info">
-                            <div class="movie-runtime">98 min</div>
-                            <div class="movie-genres-title">Genres:</div>
-                            <div class="movie-genres">Comedy, Drama</div>
-                        </div>
-                        <div class="movie-cast">
-                            <div class="movie-cast-title">Starring:</div>
-                            <div class="movie-cast-list">Ryan Reynolds, Melissa McCarthy</div>
-                        </div>
-                    </div>
-                    <div class="showtime-buttons">
-                        <button class="showtime-button">11:15 AM</button>
-                        <button class="showtime-button">2:00 PM</button>
-                        <button class="showtime-button">5:30 PM</button>
-                        <button class="showtime-button">8:45 PM</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="movie-card">
-                    <div class="movie-card-header">
-                        <div class="movie-title">Space Odyssey</div>
-                        <div class="movie-description">A groundbreaking sci-fi epic that explores the mysteries of deep space and humanity's quest to colonize distant planets.</div>
-                    </div>
-                    <div class="movie-details">
-                        <div class="movie-info">
-                            <div class="movie-runtime">156 min</div>
-                            <div class="movie-genres-title">Genres:</div>
-                            <div class="movie-genres">Sci-Fi, Adventure</div>
-                        </div>
-                        <div class="movie-cast">
-                            <div class="movie-cast-title">Starring:</div>
-                            <div class="movie-cast-list">Tom Cruise, Charlize Theron</div>
-                        </div>
-                    </div>
-                    <div class="showtime-buttons">
-                        <button class="showtime-button">12:30 PM</button>
-                        <button class="showtime-button">3:45 PM</button>
-                        <button class="showtime-button">7:00 PM</button>
-                        <button class="showtime-button">10:15 PM</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="movie-card">
-                    <div class="movie-card-header">
-                        <div class="movie-title">The Mystery of the Night</div>
-                        <div class="movie-description">A gripping thriller that keeps audiences on the edge of their seats as a detective unravels a complex web of deception and intrigue.</div>
-                    </div>
-                    <div class="movie-details">
-                        <div class="movie-info">
-                            <div class="movie-runtime">122 min</div>
-                            <div class="movie-genres-title">Genres:</div>
-                            <div class="movie-genres">Thriller, Mystery</div>
-                        </div>
-                        <div class="movie-cast">
-                            <div class="movie-cast-title">Starring:</div>
-                            <div class="movie-cast-list">Jake Gyllenhaal, Emily Blunt</div>
-                        </div>
-                    </div>
-                    <div class="showtime-buttons">
-                        <button class="showtime-button">1:00 PM</button>
-                        <button class="showtime-button">4:15 PM</button>
-                        <button class="showtime-button">7:30 PM</button>
-                        <button class="showtime-button">10:45 PM</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="movie-card">
-                    <div class="movie-card-header">
-                        <div class="movie-title">Love in Paris</div>
-                        <div class="movie-description">A romantic comedy set against the backdrop of the City of Light, where two strangers find unexpected love during a chance encounter.</div>
-                    </div>
-                    <div class="movie-details">
-                        <div class="movie-info">
-                            <div class="movie-runtime">105 min</div>
-                            <div class="movie-genres-title">Genres:</div>
-                            <div class="movie-genres">Romance, Comedy</div>
-                        </div>
-                        <div class="movie-cast">
-                            <div class="movie-cast-title">Starring:</div>
-                            <div class="movie-cast-list">Scarlett Johansson, Bradley Cooper</div>
-                        </div>
-                    </div>
-                    <div class="showtime-buttons">
-                        <button class="showtime-button">10:45 AM</button>
-                        <button class="showtime-button">2:15 PM</button>
-                        <button class="showtime-button">5:00 PM</button>
-                        <button class="showtime-button">8:30 PM</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 mb-4">
-                <div class="movie-card">
-                    <div class="movie-card-header">
-                        <div class="movie-title">Nature's Wonders</div>
-                        <div class="movie-description">A breathtaking documentary that showcases the planet's most stunning landscapes and the incredible creatures that inhabit them.</div>
-                    </div>
-                    <div class="movie-details">
-                        <div class="movie-info">
-                            <div class="movie-runtime">87 min</div>
-                            <div class="movie-genres-title">Genres:</div>
-                            <div class="movie-genres">Documentary, Nature</div>
-                        </div>
-                        <div class="movie-cast">
-                            <div class="movie-cast-title">Narrated by:</div>
-                            <div class="movie-cast-list">David Attenborough</div>
-                        </div>
-                    </div>
-                    <div class="showtime-buttons">
-                        <button class="showtime-button">11:30 AM</button>
-                        <button class="showtime-button">2:45 PM</button>
-                        <button class="showtime-button">5:15 PM</button>
-                        <button class="showtime-button">8:15 PM</button>
-                    </div>
-                </div>
+                <p class="mt-3">Loading movies...</p>
             </div>
         </div>
     </div>
@@ -632,23 +494,35 @@
         // Initialize the Judge with your team name
         const judge = new Judge("SoGiChi");
         
-        // Get all movies from the framework
-        const movies = judge.getMovies();
+        // Get all movies from the framework (data retrieved from the server)
+        let movies = [];
+        let filteredMovies = [];
+        let currentlySelectedMovie = null;
+        let currentlySelectedTime = null;
+
+        // Initialize after the framework has loaded the movies
+        window.addEventListener('DOMContentLoaded', () => {
+            // Get movies from the Judge framework
+            movies = judge.getMovies();
+            console.log("Loaded movies from server:", movies.length);
+            
+            // Set initial values
+            filteredMovies = [...movies];
+            if (movies.length > 0) {
+                currentlySelectedMovie = movies[0];
+                currentlySelectedTime = movies[0].movieTimes[0];
+            }
+            
+            // Initialize the UI with the movie data
+            initUI();
+        });
         
         // Add submission event handler
         judge.on("submission", data => {
             // "data" will include: 
             // userData (containing the data we just sent to the Judge), teamName, and elapsedTime (since page load)
             console.log("Time elapsed: " + data.elapsedTime);
-            
         });
-        
-        // Store filtered movies
-        let filteredMovies = [...movies];
-        
-
-        let currentlySelectedMovie = movies[0]; // Default to first movie
-        let currentlySelectedTime = movies[0].movieTimes[0]; // Default to first showtime
         
         // DOM elements
         const ticketCountEl = document.getElementById("ticketCount");
@@ -666,29 +540,63 @@
         
         // Initialize UI with actual movie data
         function initUI() {
-            // Clear existing genre checkboxes
+            // Clear existing genre and actor checkboxes
             includeList.innerHTML = '';
             excludeList.innerHTML = '';
             
-            // Get all unique genres from movies
-            const genres = new Set();
-            movies.forEach(movie => {
-                movie.genres.forEach(genre => genres.add(genre));
-            });
-            
-            // Add genre checkboxes
-            let i = 0;
-            genres.forEach(genre => {
-                const includeItem = createCheckboxItem(genre, `include-${i}`, true);
-                includeList.appendChild(includeItem);
-                
-                const excludeItem = createCheckboxItem(genre, `exclude-${i}`, false);
-                excludeList.appendChild(excludeItem);
-                i++;
-            });
+            // Set up genre or actor filtering based on current selection
+            updateFeatureLists();
             
             // Populate movie grid with all movies
             updateMovieGrid(movies);
+            
+            // Add event listener to toggle between genres and actors
+            featureSelect.addEventListener('change', updateFeatureLists);
+        }
+        
+        // Update feature lists based on selection (genres or actors)
+        function updateFeatureLists() {
+            // Clear existing checkboxes
+            includeList.innerHTML = '';
+            excludeList.innerHTML = '';
+            
+            const featureType = featureSelect.value; // 'genre' or 'actors'
+            
+            if (featureType === 'genre') {
+                // Get all unique genres from movies
+                const genres = new Set();
+                movies.forEach(movie => {
+                    movie.genres.forEach(genre => genres.add(genre));
+                });
+                
+                // Add genre checkboxes
+                let i = 0;
+                genres.forEach(genre => {
+                    const includeItem = createCheckboxItem(genre, `include-genre-${i}`, true);
+                    includeList.appendChild(includeItem);
+                    
+                    const excludeItem = createCheckboxItem(genre, `exclude-genre-${i}`, false);
+                    excludeList.appendChild(excludeItem);
+                    i++;
+                });
+            } else if (featureType === 'actors') {
+                // Get all unique actors from movies
+                const actors = new Set();
+                movies.forEach(movie => {
+                    movie.actors.forEach(actor => actors.add(actor));
+                });
+                
+                // Add actor checkboxes
+                let i = 0;
+                actors.forEach(actor => {
+                    const includeItem = createCheckboxItem(actor, `include-actor-${i}`, false);
+                    includeList.appendChild(includeItem);
+                    
+                    const excludeItem = createCheckboxItem(actor, `exclude-actor-${i}`, false);
+                    excludeList.appendChild(excludeItem);
+                    i++;
+                });
+            }
         }
         
         // Create a checkbox item
@@ -756,22 +664,8 @@
                 info.appendChild(genresTitle);
                 info.appendChild(genres);
                 
-                const cast = document.createElement('div');
-                cast.className = 'movie-cast';
-                
-                const castTitle = document.createElement('div');
-                castTitle.className = 'movie-cast-title';
-                castTitle.textContent = 'Starring:';
-                
-                const castList = document.createElement('div');
-                castList.className = 'movie-cast-list';
-                castList.textContent = movie.actors.join(', ');
-                
-                cast.appendChild(castTitle);
-                cast.appendChild(castList);
-                
+                // Add info to details, but handle cast separately
                 details.appendChild(info);
-                details.appendChild(cast);
                 
                 // Create showtimes section
                 const showtimes = document.createElement('div');
@@ -809,9 +703,25 @@
                     showtimes.appendChild(button);
                 });
                 
-                // Assemble card
+                // Create cast section 
+                const cast = document.createElement('div');
+                cast.className = 'movie-cast';
+                
+                const castTitle = document.createElement('div');
+                castTitle.className = 'movie-cast-title';
+                castTitle.textContent = 'Starring:';
+                
+                const castList = document.createElement('div');
+                castList.className = 'movie-cast-list';
+                castList.textContent = movie.actors.join(', ');
+                
+                cast.appendChild(castTitle);
+                cast.appendChild(castList);
+                
+                // Assemble card with new structure
                 card.appendChild(header);
-                card.appendChild(details);
+                card.appendChild(details); // Contains only the left-side info now
+                card.appendChild(cast); // Now directly in card for absolute positioning
                 card.appendChild(showtimes);
                 
                 movieGrid.appendChild(card);
@@ -835,7 +745,7 @@
             
             const ampm = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12;
-            hours = hours ? hours : 12; // Convert '0' to '12'
+            hours = hours ? hours : 12; 
             
             return `${hours}:${minutes} ${ampm}`;
         }
@@ -854,7 +764,70 @@
             return `${hours.toString().padStart(2, '0')}:${minutes}`;
         }
         
-        // Filter movies based on all criteria
+        // Filter by time ranges 
+        function getTimeRanges() {
+            const timeRanges = [];
+            
+            document.querySelectorAll('.time-range').forEach(range => {
+                const timeInputs = range.querySelectorAll('.time-input');
+                if (timeInputs.length >= 2) {
+                    const startInput = timeInputs[0];
+                    const endInput = timeInputs[1];
+                    const startTime = startInput.querySelector('.time-field').value;
+                    const endTime = endInput.querySelector('.time-field').value;
+                    
+                    // Get AM/PM toggles
+                    const startToggle = startInput.querySelector('.ampm-toggle');
+                    const endToggle = endInput.querySelector('.ampm-toggle'); 
+                    
+                    if (startToggle && endToggle) {
+                        const startAMPM = startToggle.dataset.period;
+                        const startIsActive = startToggle.classList.contains('active');
+                        const endAMPM = endToggle.dataset.period;
+                        const endIsActive = endToggle.classList.contains('active');
+                        
+                        // Create time range objects
+                        let start = null;
+                        let end = null;
+                        
+                        // Only process start time if it exists and toggle is active
+                        if (startTime && startIsActive) {
+                            let [startHours, startMinutes] = startTime.split(':');
+                            start = convertTo24HourFormat(startHours, startMinutes, startAMPM);
+                        }
+                        
+                        // Only process end time if it exists and toggle is active
+                        if (endTime && endIsActive) {
+                            let [endHours, endMinutes] = endTime.split(':');
+                            end = convertTo24HourFormat(endHours, endMinutes, endAMPM);
+                        }
+                        
+                        // Add to ranges if at least one of start or end exists
+                        if (start !== null || end !== null) {
+                            timeRanges.push({ start, end });
+                        }
+                    }
+                }
+            });
+            
+            return timeRanges;
+        }
+        
+        // Convert hours, minutes, and period to 24-hour format
+        function convertTo24HourFormat(hours, minutes, period) {
+            hours = parseInt(hours, 10);
+            minutes = parseInt(minutes, 10);
+            
+            if (period === 'PM' && hours < 12) {
+                hours += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
+        // Update filterMovies function for the new time range handling
         function filterMovies() {
             let result = [...movies];
             
@@ -868,38 +841,8 @@
                 return movie.movieLength >= minRuntime && movie.movieLength <= maxRuntime;
             });
             
-            // Filter by time ranges
-            const timeRanges = [];
-            document.querySelectorAll('.time-range').forEach(range => {
-                const startInput = range.querySelectorAll('.time-input')[0];
-                const endInput = range.querySelectorAll('.time-input')[1];
-                
-                if (startInput && endInput) {
-                    const startTime = startInput.querySelector('.time-field').value;
-                    const startAMPM = startInput.querySelector('.ampm-toggle').dataset.period;
-                    const startIsActive = startInput.querySelector('.ampm-toggle').classList.contains('active');
-                    
-                    const endTime = endInput.querySelector('.time-field').value;
-                    const endAMPM = endInput.querySelector('.ampm-toggle').dataset.period;
-                    const endIsActive = endInput.querySelector('.ampm-toggle').classList.contains('active');
-                    
-                    if (startTime && endTime && startIsActive && endIsActive) {
-                        // Extract hours and minutes
-                        let [startHours, startMinutes] = startTime.split(':');
-                        let [endHours, endMinutes] = endTime.split(':');
-                        
-                        // Convert to 12-hour format string
-                        const startTimeStr = `${parseInt(startHours)}:${startMinutes} ${startAMPM}`;
-                        const endTimeStr = `${parseInt(endHours)}:${endMinutes} ${endAMPM}`;
-                        
-                        // Convert back to 24-hour for filtering
-                        const start = parseTimeToMilitary(startTimeStr);
-                        const end = parseTimeToMilitary(endTimeStr);
-                        
-                        timeRanges.push({ start, end });
-                    }
-                }
-            });
+            // Get time ranges for filtering
+            const timeRanges = getTimeRanges();
             
             // Track valid showtimes
             if (timeRanges.length > 0) {
@@ -910,18 +853,40 @@
                     movie.movieTimes.forEach(time => {
                         // Calculate when the movie will end by adding its runtime
                         const endTimeMinutes = calculateEndTimeMinutes(time, movie.movieLength);
+                        const startTimeMinutes = convertTimeToMinutes(time);
                         
-                        // Check if this showtime fits within any of the time ranges
-                        const isValid = timeRanges.some(range => {
-                            // Check if showtime is within range
-                            const showtimeInRange = time >= range.start && time <= range.end;
+                        // Default to valid 
+                        let isValid = false;
+                        
+                        // A showtime passes if it satisfies at least one of the time ranges
+                        isValid = timeRanges.some(range => {
+                            // Handle open-ended ranges
+                            const rangeStartMinutes = range.start ? convertTimeToMinutes(range.start) : 0; // Default to start of day
+                            const rangeEndMinutes = range.end ? convertTimeToMinutes(range.end) : 24 * 60 - 1; // Default to end of day
                             
-                            // Check if movie end time is within range by comparing minutes
-                            const rangeEndMinutes = convertTimeToMinutes(range.end);
-                            const movieEndsWithinRange = endTimeMinutes <= rangeEndMinutes;
+                            // If only start time provided: movie must start after specified time
+                            if (range.start && !range.end) {
+                                return startTimeMinutes >= rangeStartMinutes;
+                            }
                             
-                            // Both conditions must be true
-                            return showtimeInRange && movieEndsWithinRange;
+                            // If only end time provided: movie must end before specified time
+                            if (!range.start && range.end) {
+                                return endTimeMinutes <= rangeEndMinutes;
+                            }
+                            
+                            // Check if this is an overnight range (crossing midnight)
+                            const isOvernightRange = rangeEndMinutes < rangeStartMinutes;
+                            
+                            if (isOvernightRange) {
+                                // For overnight ranges, the movie should either:
+                                // Start after the range start and before midnight, or
+                                // Start after midnight and before the range end
+                                return (startTimeMinutes >= rangeStartMinutes) || 
+                                       (startTimeMinutes <= rangeEndMinutes);
+                            } else {
+                                // For regular ranges, movie must start between start and end times
+                                return startTimeMinutes >= rangeStartMinutes && startTimeMinutes <= rangeEndMinutes;
+                            }
                         });
                         
                         if (isValid) {
@@ -942,28 +907,48 @@
                 });
             }
             
-            // Filter by genres (include/exclude)
-            const includeGenres = [];
-            const excludeGenres = [];
+            // Get the current feature type for filtering
+            const featureType = featureSelect.value; // genre or actors
+            
+            // Get checked items from include and exclude lists
+            const includeItems = [];
+            const excludeItems = [];
             
             includeList.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                includeGenres.push(checkbox.nextElementSibling.textContent);
+                includeItems.push(checkbox.nextElementSibling.textContent);
             });
             
             excludeList.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                excludeGenres.push(checkbox.nextElementSibling.textContent);
+                excludeItems.push(checkbox.nextElementSibling.textContent);
             });
             
-            if (includeGenres.length > 0) {
-                result = result.filter(movie => {
-                    return movie.genres.some(genre => includeGenres.includes(genre));
-                });
-            }
-            
-            if (excludeGenres.length > 0) {
-                result = result.filter(movie => {
-                    return !movie.genres.some(genre => excludeGenres.includes(genre));
-                });
+            // Apply feature filtering based on type
+            if (featureType === 'genre') {
+                // Filter by genres
+                if (includeItems.length > 0) {
+                    result = result.filter(movie => {
+                        return movie.genres.some(genre => includeItems.includes(genre));
+                    });
+                }
+                
+                if (excludeItems.length > 0) {
+                    result = result.filter(movie => {
+                        return !movie.genres.some(genre => excludeItems.includes(genre));
+                    });
+                }
+            } else if (featureType === 'actors') {
+                // Filter by actors
+                if (includeItems.length > 0) {
+                    result = result.filter(movie => {
+                        return movie.actors.some(actor => includeItems.includes(actor));
+                    });
+                }
+                
+                if (excludeItems.length > 0) {
+                    result = result.filter(movie => {
+                        return !movie.actors.some(actor => excludeItems.includes(actor));
+                    });
+                }
             }
             
             return result;
@@ -996,18 +981,19 @@
             ticketCountEl.textContent = count + 1;
         });
         
-        // Time range functionality
+        // Add time range functionality
         addTimeRangeBtn.addEventListener('click', () => {
+            const rangeCount = document.querySelectorAll('.time-range').length + 1;
             const newRange = document.createElement('div');
             newRange.className = 'time-range';
             newRange.innerHTML = `
                 <div class="time-input">
-                    <input type="time" class="time-field" value="10:00">
+                    <input type="text" class="time-field" pattern="([1-9]|1[0-2]):[0-5][0-9]" placeholder="From">
                     <button class="ampm-toggle active" data-period="AM">AM</button>
                 </div>
                 <span>to</span>
                 <div class="time-input">
-                    <input type="time" class="time-field" value="12:00">
+                    <input type="text" class="time-field" pattern="([1-9]|1[0-2]):[0-5][0-9]" placeholder="To">
                     <button class="ampm-toggle" data-period="PM">PM</button>
                 </div>
                 <button class="btn btn-danger btn-sm">×</button>
@@ -1061,7 +1047,7 @@
             updateMovieGrid(filteredMovies);
         });
         
-        // Submit button click handler - just like in index-2.html
+        // Submit button click handler 
         submitButton.addEventListener('click', () => {
             // Check if a showtime has been selected
             const selectedShowtime = document.querySelector('.showtime-button.selected');
@@ -1074,7 +1060,7 @@
             const ticketCount = parseInt(ticketCountEl.textContent);
             const userName = document.getElementById("userName").value || "User";
             
-            // Bundle up everything the Judge wants to see (exactly like in index-2.html)
+            // Metadata for the Judge
             const userData = {
                 movie: currentlySelectedMovie, 
                 movieTime: currentlySelectedTime, 
@@ -1101,7 +1087,7 @@
                 submitButton.disabled = false;
             }, 5000);
             
-            // Submit it to the Judge (exactly like in index-2.html)
+            // Submit it to the Judge 
             judge.submitMovieChoice(userData);
         });
         
