@@ -19,7 +19,7 @@
         #header {
             position: fixed;
             top: 0;
-            left: 300px;
+            left: 450px;
             right: 0;
             height: 80px;
             background: #2d3748;
@@ -38,7 +38,7 @@
         }
 
         #sidebar {
-            width: 300px;
+            width: 450px;
             height: 100vh;
             background-color: white;
             padding: 20px;
@@ -286,6 +286,62 @@
             background-color: #3182ce;
             border-color: #3182ce;
         }
+
+        .time-picker {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .time-picker select {
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            padding: 5px;
+        }
+
+        .time-picker .hour-select, .time-picker .minute-select {
+            width: 60px;
+        }
+
+        .time-picker .ampm-select {
+            width: 70px;
+        }
+        
+        .time-input {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .time-field {
+            border: none;
+            outline: none;
+            padding: 6px 8px;
+            width: 85px;
+            text-align: center;
+        }
+        
+        .ampm-toggle {
+            border: none;
+            padding: 0 8px;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            font-weight: 500;
+            min-width: 45px;
+            color: #4a5568;
+            transition: background-color 0.2s ease;
+        }
+        
+        .ampm-toggle:hover {
+            background-color: #e2e8f0;
+        }
+        
+        .ampm-toggle.active {
+            background-color: #4a5568;
+            color: white;
+        }
     </style>
     <!-- One required script -->
     <script src="https://dhcs-s25-bakeoff3.glitch.me/framework.js"></script>
@@ -344,13 +400,27 @@
             <h5>Time Filters</h5>
             <div id="timeRanges">
                 <div class="time-range">
-                    <input type="time" class="form-control" value="14:00" placeholder="Start After">
-                    <input type="time" class="form-control" value="20:00" placeholder="End Before">
+                    <div class="time-input">
+                        <input type="time" class="time-field" value="14:00">
+                        <button class="ampm-toggle active" data-period="PM">PM</button>
+                    </div>
+                    <span>to</span>
+                    <div class="time-input">
+                        <input type="time" class="time-field" value="20:00">
+                        <button class="ampm-toggle active" data-period="PM">PM</button>
+                    </div>
                     <button class="btn btn-danger btn-sm">×</button>
                 </div>
                 <div class="time-range">
-                    <input type="time" class="form-control" value="10:00" placeholder="Start After">
-                    <input type="time" class="form-control" value="12:00" placeholder="End Before">
+                    <div class="time-input">
+                        <input type="time" class="time-field" value="10:00">
+                        <button class="ampm-toggle active" data-period="AM">AM</button>
+                    </div>
+                    <span>to</span>
+                    <div class="time-input">
+                        <input type="time" class="time-field" value="12:00">
+                        <button class="ampm-toggle" data-period="PM">PM</button>
+                    </div>
                     <button class="btn btn-danger btn-sm">×</button>
                 </div>
             </div>
@@ -359,9 +429,16 @@
 
         <div class="filter-section">
             <h5>Runtime Filter</h5>
-            <div class="d-flex gap-2">
-                <input type="number" class="form-control" value="90" placeholder="Min (minutes)">
-                <input type="number" class="form-control" value="180" placeholder="Max (minutes)">
+            <div class="d-flex gap-2 align-items-center">
+                <div class="input-group">
+                    <input type="number" class="form-control" value="90" placeholder="Min">
+                    <span class="input-group-text">min</span>
+                </div>
+                <span>to</span>
+                <div class="input-group">
+                    <input type="number" class="form-control" value="180" placeholder="Max">
+                    <span class="input-group-text">min</span>
+                </div>
             </div>
         </div>
 
@@ -374,7 +451,7 @@
             </div>
         </div>
 
-        <div class="filter-section">
+        <div class="filter-section" style="background-color: #c1bbd6;">
             <h5>Your Name</h5>
             <input type="text" id="userName" class="form-control" placeholder="Enter your name" value="User">
         </div>
@@ -700,16 +777,23 @@
                 const showtimes = document.createElement('div');
                 showtimes.className = 'showtime-buttons';
                 
-                movie.movieTimes.forEach(time => {
+                // Use the filtered showtimes if available, otherwise use all showtimes
+                const timesToShow = movie.validShowtimes || movie.movieTimes;
+                
+                timesToShow.forEach(time => {
                     const button = document.createElement('button');
                     button.className = 'showtime-button';
-                    button.textContent = time;
+                    
+                    // Convert military time to AM/PM format
+                    const formattedTime = formatTimeToAMPM(time);
+                    button.textContent = formattedTime;
+                    button.dataset.originalTime = time; 
                     
                     // Add click event for showtime selection
                     button.addEventListener('click', () => {
                         // Store selected movie and time 
                         currentlySelectedMovie = movie;
-                        currentlySelectedTime = time;
+                        currentlySelectedTime = time; 
                         
                         // Highlight selected button
                         document.querySelectorAll('.showtime-button.selected').forEach(btn => {
@@ -742,6 +826,34 @@
             }
         }
         
+        // Format time from 24-hour to AM/PM format
+        function formatTimeToAMPM(time) {
+            if (!time) return '';
+            
+            let [hours, minutes] = time.split(':');
+            hours = parseInt(hours);
+            
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // Convert '0' to '12'
+            
+            return `${hours}:${minutes} ${ampm}`;
+        }
+        
+        // Parse AM/PM time back to 24-hour format for filtering
+        function parseTimeToMilitary(timeStr) {
+            if (!timeStr) return '';
+            
+            const [timePart, ampm] = timeStr.split(' ');
+            let [hours, minutes] = timePart.split(':');
+            hours = parseInt(hours);
+            
+            if (ampm === 'PM' && hours < 12) hours += 12;
+            if (ampm === 'AM' && hours === 12) hours = 0;
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes}`;
+        }
+        
         // Filter movies based on all criteria
         function filterMovies() {
             let result = [...movies];
@@ -759,22 +871,74 @@
             // Filter by time ranges
             const timeRanges = [];
             document.querySelectorAll('.time-range').forEach(range => {
-                const inputs = range.querySelectorAll('input[type="time"]');
-                if (inputs[0].value && inputs[1].value) {
-                    timeRanges.push({
-                        start: inputs[0].value,
-                        end: inputs[1].value
-                    });
+                const startInput = range.querySelectorAll('.time-input')[0];
+                const endInput = range.querySelectorAll('.time-input')[1];
+                
+                if (startInput && endInput) {
+                    const startTime = startInput.querySelector('.time-field').value;
+                    const startAMPM = startInput.querySelector('.ampm-toggle').dataset.period;
+                    const startIsActive = startInput.querySelector('.ampm-toggle').classList.contains('active');
+                    
+                    const endTime = endInput.querySelector('.time-field').value;
+                    const endAMPM = endInput.querySelector('.ampm-toggle').dataset.period;
+                    const endIsActive = endInput.querySelector('.ampm-toggle').classList.contains('active');
+                    
+                    if (startTime && endTime && startIsActive && endIsActive) {
+                        // Extract hours and minutes
+                        let [startHours, startMinutes] = startTime.split(':');
+                        let [endHours, endMinutes] = endTime.split(':');
+                        
+                        // Convert to 12-hour format string
+                        const startTimeStr = `${parseInt(startHours)}:${startMinutes} ${startAMPM}`;
+                        const endTimeStr = `${parseInt(endHours)}:${endMinutes} ${endAMPM}`;
+                        
+                        // Convert back to 24-hour for filtering
+                        const start = parseTimeToMilitary(startTimeStr);
+                        const end = parseTimeToMilitary(endTimeStr);
+                        
+                        timeRanges.push({ start, end });
+                    }
                 }
             });
             
+            // Track valid showtimes
             if (timeRanges.length > 0) {
-                result = result.filter(movie => {
-                    return movie.movieTimes.some(time => {
-                        return timeRanges.some(range => {
-                            return time >= range.start && time <= range.end;
+                result.forEach(movie => {
+                    const validShowtimes = [];
+                    
+                    // Check each showtime
+                    movie.movieTimes.forEach(time => {
+                        // Calculate when the movie will end by adding its runtime
+                        const endTimeMinutes = calculateEndTimeMinutes(time, movie.movieLength);
+                        
+                        // Check if this showtime fits within any of the time ranges
+                        const isValid = timeRanges.some(range => {
+                            // Check if showtime is within range
+                            const showtimeInRange = time >= range.start && time <= range.end;
+                            
+                            // Check if movie end time is within range by comparing minutes
+                            const rangeEndMinutes = convertTimeToMinutes(range.end);
+                            const movieEndsWithinRange = endTimeMinutes <= rangeEndMinutes;
+                            
+                            // Both conditions must be true
+                            return showtimeInRange && movieEndsWithinRange;
                         });
+                        
+                        if (isValid) {
+                            validShowtimes.push(time);
+                        }
                     });
+                    
+                    // Store the filtered showtimes on the movie object
+                    movie.validShowtimes = validShowtimes;
+                });
+                
+                // Only filter out movies that have no valid showtimes left
+                result = result.filter(movie => movie.validShowtimes.length > 0);
+            } else {
+                // If no time filters, all showtimes are valid
+                result.forEach(movie => {
+                    movie.validShowtimes = [...movie.movieTimes];
                 });
             }
             
@@ -805,6 +969,20 @@
             return result;
         }
         
+        // Calculate the end time of a movie in minutes since midnight
+        function calculateEndTimeMinutes(startTime, durationMinutes) {
+            // Convert start time to minutes since midnight
+            const startMinutes = convertTimeToMinutes(startTime);
+            // Add the movie duration
+            return startMinutes + durationMinutes;
+        }
+        
+        // Convert time string (HH:MM) to minutes since midnight
+        function convertTimeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+        
         // Ticket counter functionality
         ticketBtns[0].addEventListener('click', () => {
             let count = parseInt(ticketCountEl.textContent);
@@ -823,14 +1001,26 @@
             const newRange = document.createElement('div');
             newRange.className = 'time-range';
             newRange.innerHTML = `
-                <input type="time" value="10:00" placeholder="Start After">
-                <input type="time" value="22:00" placeholder="End Before">
-                <button class="btn-danger">×</button>
+                <div class="time-input">
+                    <input type="time" class="time-field" value="10:00">
+                    <button class="ampm-toggle active" data-period="AM">AM</button>
+                </div>
+                <span>to</span>
+                <div class="time-input">
+                    <input type="time" class="time-field" value="12:00">
+                    <button class="ampm-toggle" data-period="PM">PM</button>
+                </div>
+                <button class="btn btn-danger btn-sm">×</button>
             `;
             
             // Add event listener to delete button
             newRange.querySelector('.btn-danger').addEventListener('click', (e) => {
                 e.target.closest('.time-range').remove();
+            });
+            
+            // Add event listeners to AM/PM toggle buttons
+            newRange.querySelectorAll('.ampm-toggle').forEach(btn => {
+                btn.addEventListener('click', toggleAMPM);
             });
             
             timeRangesContainer.appendChild(newRange);
@@ -843,6 +1033,26 @@
                     e.target.closest('.time-range').remove();
                 }
             });
+        });
+        
+        // AM/PM toggle functionality
+        function toggleAMPM(e) {
+            const button = e.target;
+            button.classList.toggle('active');
+            
+            // Toggle between AM and PM
+            if (button.dataset.period === 'AM') {
+                button.dataset.period = 'PM';
+                button.textContent = 'PM';
+            } else {
+                button.dataset.period = 'AM';
+                button.textContent = 'AM';
+            }
+        }
+        
+        // Add event listeners to initial AM/PM toggle buttons
+        document.querySelectorAll('.ampm-toggle').forEach(btn => {
+            btn.addEventListener('click', toggleAMPM);
         });
         
         // Apply filters button
@@ -875,8 +1085,9 @@
             // Log the submission
             console.log('Submitting:', currentlySelectedMovie.title, currentlySelectedTime, ticketCount, 'tickets for', userName);
             
-            // Show successful submission alert
-            alert(`Thank you, ${userName}! Your selection of ${ticketCount} ticket(s) for "${currentlySelectedMovie.title}" at ${currentlySelectedTime} has been submitted successfully.`);
+            // Successful submission alert 
+            const formattedTime = formatTimeToAMPM(currentlySelectedTime);
+            alert(`Thank you, ${userName}! Your selection of ${ticketCount} ticket(s) for "${currentlySelectedMovie.title}" at ${formattedTime} has been submitted successfully.`);
             
             // Visual feedback
             submitButton.textContent = "Submitted!";
