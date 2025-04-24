@@ -362,9 +362,14 @@
         <div class="filter-section">
             <div class="filter-header">
                 <h5>Feature Filters</h5>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="featureToggle">
-                    <label class="form-check-label" for="featureToggle">Include/Exclude</label>
+                <div style="display: flex; align-items: center; width: 140px; position: relative;">
+                    <span class="small" style="position: absolute; left: 0;">Include</span>
+                    <div style="margin: 0 auto;">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="featureToggle">
+                        </div>
+                    </div>
+                    <span class="small" style="position: absolute; right: 0;">Exclude</span>
                 </div>
             </div>
             <select class="form-select mb-3" id="featureSelect">
